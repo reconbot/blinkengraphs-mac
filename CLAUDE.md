@@ -9,6 +9,8 @@ The spec repo, reconbot/blinkengraphs, is the authority. Pin a release tag, and 
 - `defaults.json`: Probe Group, intervals, timeouts, history lengths.
 - `tokens/`, `fixtures/`: colors and thresholds; data for previews and screenshots.
 
+Changes that touch more than one repo follow the spec's `docs/sync.md`: bump the pinned spec tag in a PR whenever the spec releases.
+
 A rule this app needs but the spec lacks is a spec PR first. The Windows reference implementation (reconbot/blinkengraphs-win) regenerates the vectors. Local Metrics need platform-neutral names in the spec before the local half of the Verdict can be shared (spec `docs/cross-platform.md`).
 
 macOS Local Network Privacy can block Gateway Probes: report them as `denied`, never as loss.
