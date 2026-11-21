@@ -14,3 +14,12 @@ Menu-bar CPU, memory, disk, network and latency graphs for macOS, with a plain-l
 ## Spec
 
 The vocabulary, Verdict rules, test vectors and design tokens live in [reconbot/blinkengraphs](https://github.com/reconbot/blinkengraphs). This app implements them natively, and its CI runs the spec's test vectors.
+
+## Repositories
+
+| Repo | Contents |
+|---|---|
+| [blinkengraphs](https://github.com/reconbot/blinkengraphs) | Landing page and shared spec |
+| [blinkengraphs-win](https://github.com/reconbot/blinkengraphs-win) | Windows 11 app (Rust) |
+| [blinkengraphs-mac](https://github.com/reconbot/blinkengraphs-mac) | macOS menu bar app (planned) |
+| [blinkengraphs-ios](https://github.com/reconbot/blinkengraphs-ios) | iOS network diagnosis app (planned) |
