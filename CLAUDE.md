@@ -2,7 +2,7 @@
 
 Native Swift, SwiftUI and AppKit menu-bar app. Scope is in `README.md`.
 
-The spec repo, reconbot/blinkengraphs, is the authority. Pin a release tag, and run its vectors in CI:
+The spec repo, reconbot/blinkengraphs, is the authority, except where an ADR here records a departure. Pin a release tag, and run its vectors in CI:
 - `CONTEXT.md`: vocabulary. Use its terms in code and UI.
 - `rules/`: Verdict, Probe stats, Hop Trace.
 - `vectors/`: conformance tests. An implementation conforms when every vector passes.
@@ -11,7 +11,7 @@ The spec repo, reconbot/blinkengraphs, is the authority. Pin a release tag, and 
 
 Changes that touch more than one repo follow the spec's `docs/sync.md`: bump the pinned spec tag in a PR whenever the spec releases.
 
-A rule this app needs but the spec lacks is a spec PR first. The Windows reference implementation (reconbot/blinkengraphs-win) regenerates the vectors. Local Metrics need platform-neutral names in the spec before the local half of the Verdict can be shared (spec `docs/cross-platform.md`).
+A rule this app needs but the spec lacks is a spec PR first, unless it is a departure for this app's normal use ([spec ADR 0002](https://github.com/reconbot/blinkengraphs/blob/main/docs/adr/0002-platforms-may-depart-for-their-normal-use.md)): then it is an ADR here naming the rule it replaces, and CI skips any vector it voids, by name. The Windows reference implementation (reconbot/blinkengraphs-win) regenerates the vectors. Local Metrics need platform-neutral names in the spec before the local half of the Verdict can be shared (spec `docs/cross-platform.md`).
 
 macOS Local Network Privacy can block Gateway Probes: report them as `denied`, never as loss.
 
