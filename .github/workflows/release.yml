@@ -1,0 +1,41 @@
+name: release
+# release-please cuts tagged releases from Conventional Commits; each release carries the
+# ad-hoc-signed app as a zip (docs/adr/0002).
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      created: ${{ steps.rp.outputs.release_created }}
+      tag: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
+        id: rp
+
+  build:
+    needs: release-please
+    if: needs.release-please.outputs.created == 'true'
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.release-please.outputs.tag }}
+          submodules: true
+      - run: brew install xcodegen && xcodegen generate
+      - run: >
+          xcodebuild build -project Blinkengraphs.xcodeproj -scheme Blinkengraphs
+          -configuration Release -destination 'generic/platform=macOS' -derivedDataPath DerivedData
+      - run: |
+          mkdir -p dist
+          ditto -c -k --keepParent DerivedData/Build/Products/Release/Blinkengraphs.app dist/blinkengraphs-mac.zip
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.release-please.outputs.tag }}
+        run: gh release upload "$TAG" dist/blinkengraphs-mac.zip --clobber

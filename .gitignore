@@ -1,0 +1,8 @@
+*.xcodeproj/
+App/Info.plist
+Config/Local.xcconfig
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+dist/

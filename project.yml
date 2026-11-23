@@ -1,0 +1,64 @@
+# XcodeGen spec; the .xcodeproj is generated, not committed. `xcodegen generate`
+name: Blinkengraphs
+options:
+  deploymentTarget:
+    macOS: "26.0"
+configFiles:
+  Debug: Config/Base.xcconfig
+  Release: Config/Base.xcconfig
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0" # x-release-please-version
+    CURRENT_PROJECT_VERSION: "1"
+packages:
+  # Keep in step with MacMetrics/Package.swift; scripts/kit-vectors.sh reads this version.
+  BlinkengraphsKit:
+    url: https://github.com/reconbot/blinkengraphs-kit
+    exactVersion: 2.0.0
+  MacMetrics:
+    path: MacMetrics
+targets:
+  Blinkengraphs:
+    type: application
+    platform: macOS
+    sources:
+      - App/Sources
+      # Bundled from the pinned spec so defaults and colors match every platform.
+      - path: spec/defaults.json
+        buildPhase: resources
+      # This platform's overrides, merged over the spec's defaults (spec rules/defaults.md).
+      - path: defaults.override.json
+        buildPhase: resources
+      - path: spec/tokens/blinkengraphs.tokens.json
+        buildPhase: resources
+      - path: spec/tokens/blinkengraphs.light.tokens.json
+        buildPhase: resources
+      - path: spec/.release-please-manifest.json
+        buildPhase: resources
+    dependencies:
+      - package: BlinkengraphsKit
+        product: BlinkengraphsCore
+      - package: MacMetrics
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: blinkengraphs
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        # Menu bar only: no Dock icon, no main window.
+        LSUIElement: true
+        LSApplicationCategoryType: public.app-category.utilities
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(BUNDLE_ID_PREFIX).blinkengraphs
+        GENERATE_INFOPLIST_FILE: NO
+        # No App Sandbox: it hides other processes and system counters (docs/adr/0002).
+        ENABLE_APP_SANDBOX: NO
+        # Notarization needs the hardened runtime; turn it on with signing (docs/adr/0002).
+        ENABLE_HARDENED_RUNTIME: NO
+schemes:
+  Blinkengraphs:
+    build:
+      targets:
+        Blinkengraphs: all

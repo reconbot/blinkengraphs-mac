@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  spec-current:
+    name: Spec is the latest release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: scripts/spec-current.sh
+
+  vectors:
+    name: Spec vectors (kit at this app's pins)
+    runs-on: ubuntu-latest
+    container: swift:6.4.3-noble
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+      - run: scripts/kit-vectors.sh
+
+  mac:
+    name: MacMetrics tests and app build
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+      - run: swift test --package-path MacMetrics
+      - run: brew install xcodegen
+      - run: xcodegen generate
+      - name: Build, ad-hoc signed
+        run: >
+          xcodebuild build
+          -project Blinkengraphs.xcodeproj
+          -scheme Blinkengraphs
+          -configuration Release
+          -destination 'generic/platform=macOS'
+          -derivedDataPath DerivedData
+      - name: Zip the app
+        run: |
+          mkdir -p dist
+          ditto -c -k --keepParent DerivedData/Build/Products/Release/Blinkengraphs.app dist/blinkengraphs-mac.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blinkengraphs-mac
+          path: dist/blinkengraphs-mac.zip
