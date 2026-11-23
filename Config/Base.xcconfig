@@ -1,0 +1,7 @@
+// Ad-hoc signed by default: Apple silicon runs no unsigned code, and this needs no Apple account
+// (docs/adr/0002). For your own identity, copy Local.xcconfig.example to Local.xcconfig (git-ignored).
+BUNDLE_ID_PREFIX = org.example
+CODE_SIGN_STYLE = Manual
+CODE_SIGN_IDENTITY = -
+DEVELOPMENT_TEAM =
+#include? "Local.xcconfig"

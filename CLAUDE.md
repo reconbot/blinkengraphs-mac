@@ -9,9 +9,11 @@ The spec repo, reconbot/blinkengraphs, is the authority, except where an ADR her
 - `defaults.json`: Probe Group, intervals, timeouts, history lengths.
 - `tokens/`, `fixtures/`: colors and thresholds; data for previews and screenshots.
 
-Changes that touch more than one repo follow the spec's `docs/sync.md`: bump the pinned spec tag in a PR whenever the spec releases.
+Changes that touch more than one repo follow the spec's `docs/sync.md`: when the spec releases, bump the kit version and `spec/` together in one PR.
 
-A rule this app needs but the spec lacks is a spec PR first, unless it is a departure for this app's normal use ([spec ADR 0002](https://github.com/reconbot/blinkengraphs/blob/main/docs/adr/0002-platforms-may-depart-for-their-normal-use.md)): then it is an ADR here naming the rule it replaces, and CI skips any vector it voids, by name. The Windows reference implementation (reconbot/blinkengraphs-win) regenerates the vectors. Local Metrics need platform-neutral names in the spec before the local half of the Verdict can be shared (spec `docs/cross-platform.md`).
+A rule this app needs but the spec lacks is a spec PR first, unless it is a departure for this app's normal use ([spec ADR 0002](https://github.com/reconbot/blinkengraphs/blob/main/docs/adr/0002-platforms-may-depart-for-their-normal-use.md)): then it is an ADR here naming the rule it replaces, and CI skips any vector it voids, by name.
+
+The rules code is reconbot/blinkengraphs-kit's `BlinkengraphsCore`; a change to it is a kit PR. This repo holds macOS code only: `MacMetrics/` reads kernel counters into the spec's Local Metrics (ADR 0004), `App/` draws the Meters and the Panel. `project.yml` (XcodeGen; `xcodegen generate`) and `MacMetrics/Package.swift` pin the same kit version; `scripts/kit-vectors.sh` runs the kit's tests against `spec/`.
 
 macOS Local Network Privacy can block Gateway Probes: report them as `denied`, never as loss.
 
