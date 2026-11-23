@@ -1,4 +1,5 @@
 import BlinkengraphsCore
+import Foundation
 import MacMetrics
 import Network
 import Observation
@@ -22,11 +23,12 @@ final class Monitor {
     private(set) var followedAdapter: String?
 
     private let counters = SystemCounters()
-    private var last: Counters?
-    private var timer: Timer?
+    @ObservationIgnored private var last: Counters?
+    @ObservationIgnored private var timer: Timer?
     private let path = NWPathMonitor()
-    /// The busiest network rate seen: the Network Meter's full height and the Verdict's upload_peak_bps.
-    private var peakDown = 0.0, peakUp = 0.0
+    /// The busiest network rates seen: the Network Meter's full height and the Verdict's upload_peak_bps.
+    @ObservationIgnored private var peakDown = 0.0
+    @ObservationIgnored private var peakUp = 0.0
 
     func start() {
         // The Followed Adapter is the one carrying the default route; the OS lists it first.
